@@ -9,6 +9,7 @@ describe 'Game of life' do
     it { should respond_to :rows }
     it { should respond_to :cols }
     it { should respond_to :cell_grid }
+    it { should respond_to :populate_randomly }
   end
 
   context 'World.cell_grid' do

@@ -91,6 +91,14 @@ class World
         Cell.new(col,row)
       end
     end
+
+    def populate_randomly
+      @cell_grid.each do |row|
+        row.each do |cell|
+          cell.alive = [true, false].sample
+        end
+      end
+    end
   end
 
   # for debugging
