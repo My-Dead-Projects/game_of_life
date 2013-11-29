@@ -98,11 +98,16 @@ describe 'Game of life' do
   describe 'Rule' do
 
     describe '1: Any living cell with fewer than 2 live neighbors should die:' do
-      it 'Should kill a live cell with 1 neighbor' do
+      it 'A live cell with 1 neighbor should die' do
         game = Game.new(World.new, [[0,1],[0,2]])
         game.tick!
         game.world.cell_grid[0][1].should be_dead
         game.world.cell_grid[0][2].should be_dead
+      end
+      it 'A live cell with no neighbors should die' do
+        game = Game.new(World.new, [[1,1]])
+        game.tick!
+        game.world.cell_grid[1][1].should be_dead
       end
     end
   end

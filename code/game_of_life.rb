@@ -15,7 +15,7 @@ class Game
     die_list = []
     (0..@world.rows-1).each do |i|
       (0..@world.cols-1).each do |j|
-        if live_neighbors(i,j) == 1
+        if live_neighbors(i,j) < 2
           die_list << [i, j]
         end
       end
