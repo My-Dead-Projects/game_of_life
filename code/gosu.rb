@@ -9,33 +9,51 @@ class GameWindow < Gosu::Window
   @height
 
   def initialize
-    @width = 800
-    @height = 600
+    @width = 1200
+    @height = 800
     super @width, @height, false
     self.caption = "Conway's Game of Life"
 
+    #background color
     @bg_color = Gosu::Color.new(0xffdddddd)
-    @bg_color2 = Gosu::Color.new(0xccdddddd)
-    @bg_color3 = Gosu::Color.new(0x99dddddd)
 
-    @cols = @width/10
-    @rows = @height/10
+    #live cell color
+    @lc_color = Gosu::Color.new(0xff000000)
 
-    @world = World.new
+    #cell size
+    @cs = 2
+
+    @cols = @width/@cs
+    @rows = @height/@cs
+
+    @world = World.new(@rows, @cols)
     @world.populate_randomly
     @game = Game.new(@world)
 
   end
 
   def update
-
+    @game.tick!
   end
 
   def draw
-    draw_quad(0,0, @bg_color,
-              @width, 0, @bg_color2,
-              @width, @height, @bg_color3,
-              0, @height, @bg_color2)
+    #draw background
+    draw_quad(0,      0,       @bg_color,
+              @width, 0,       @bg_color,
+              @width, @height, @bg_color,
+              0,      @height, @bg_color)
+
+    #draw live cells
+    @world.cell_grid.each do |row|
+      row.each do |c|
+        if c.alive?
+          draw_quad(c.x*@cs,     c.y*@cs,     @lc_color,
+                    c.x*@cs+@cs, c.y*@cs,     @lc_color,
+                    c.x*@cs+@cs, c.y*@cs+@cs, @lc_color,
+                    c.x*@cs,     c.y*@cs+@cs, @lc_color)
+        end
+      end
+    end
   end
 
   def needs_cursor?

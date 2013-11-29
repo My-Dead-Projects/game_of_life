@@ -12,16 +12,26 @@ class Game
   end
 
   def tick!
-    die_list = []
+    death_list = []
+    spawn_list = []
     (0..@world.rows-1).each do |i|
       (0..@world.cols-1).each do |j|
         if live_neighbors(i,j) < 2
-          die_list << [i, j]
+          death_list << [i, j]
+        end
+        if live_neighbors(i,j) > 3
+          death_list << [i, j]
+        end
+        if live_neighbors(i,j) == 3
+          spawn_list << [i, j]
         end
       end
     end
-    die_list.each do |e|
+    death_list.each do |e|
       @world.cell_grid[e[0]][e[1]].die!
+    end
+    spawn_list.each do |e|
+      @world.cell_grid[e[0]][e[1]].spawn!
     end
   end
 
@@ -95,24 +105,9 @@ class World
     def populate_randomly
       @cell_grid.each do |row|
         row.each do |cell|
-          cell.alive = [true, false].sample
+          cell.alive = [true, false, false, false].sample
         end
       end
-    end
-  end
-
-  # for debugging
-  def print_cell_grid
-    puts
-    cell_grid.each do |a|
-      a.each do |e|
-        if e.alive?
-          print ' X'
-        else
-          print ' -'
-        end
-      end
-      puts
     end
   end
 
@@ -132,6 +127,10 @@ class Cell
 
   def die!
     @alive = false
+  end
+
+  def spawn!
+    @alive = true
   end
 
   def initialize(x, y)

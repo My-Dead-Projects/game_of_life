@@ -98,18 +98,64 @@ describe 'Game of life' do
 
   describe 'Rule' do
 
-    describe '1: Any living cell with fewer than 2 live neighbors should die:' do
-      it 'A live cell with 1 neighbor should die' do
-        game = Game.new(World.new, [[0,1],[0,2]])
-        game.tick!
-        game.world.cell_grid[0][1].should be_dead
-        game.world.cell_grid[0][2].should be_dead
+    describe '1: Any live cell with fewer than 2 live neighbors should die:' do
+      context 'A live cell with 1 neighbor' do
+        it 'should die' do
+          game = Game.new(World.new, [[0,1],[0,2]])
+          game.tick!
+          game.world.cell_grid[0][1].should be_dead
+          game.world.cell_grid[0][2].should be_dead
+        end
       end
-      it 'A live cell with no neighbors should die' do
-        game = Game.new(World.new, [[1,1]])
+      context 'A live cell with no neighbors' do
+        it 'should die' do
+          game = Game.new(World.new, [[1,1]])
+          game.tick!
+          game.world.cell_grid[1][1].should be_dead
+        end
+      end
+    end
+    describe '2: Any live cell with 2 or 3 live neighbors should live:' do
+      it 'A live cell with 2 neighbors should not die' do
+        game = Game.new(World.new, [[0,1], [0,2], [1,1]])
+        game.tick!
+        game.world.cell_grid[1][1].should be_alive
+      end
+      it 'A live cell with 3 neighbors should not die' do
+        game = Game.new(World.new, [[0,1], [0,0], [1,1], [0,2]])
+        game.tick!
+        game.world.cell_grid[0][1].should be_alive
+      end
+    end
+    describe '3: Any live cell with more than 3 neighbors should die:' do
+      it 'A live cell with 4 neighbors should die' do
+        game = Game.new(World.new, [[1,1], [1,0], [2,1], [1,2], [0,1]])
         game.tick!
         game.world.cell_grid[1][1].should be_dead
       end
+      it 'A live cell with 5 neighbors should die' do
+        game = Game.new(World.new, [[1,1], [1,0], [2,0], [2,1], [1,2], [0,1]])
+        game.tick!
+        game.world.cell_grid[1][1].should be_dead
+      end
+      it 'A live cell with 6 neighbors should die' do
+        game = Game.new(World.new, [[1,1], [1,0], [2,0], [2,1], [2,2], [1,2], [0,1]])
+        game.tick!
+        game.world.cell_grid[1][1].should be_dead
+      end
+      it 'A live cell with 7 neighbors should die' do
+        game = Game.new(World.new, [[1,1], [1,0], [2,0], [2,1], [2,2], [1,2], [0,2], [0,1]])
+        game.tick!
+        game.world.cell_grid[1][1].should be_dead
+      end
+      it 'A live cell with 8 neighbors should die' do
+        game = Game.new(World.new, [[1,1], [1,0], [2,0], [2,1], [2,2], [1,2], [0,2], [0,1], [0,0]])
+        game.tick!
+        game.world.cell_grid[1][1].should be_dead
+      end
+    end
+    describe '4: Any dead cell with exactly three live neighbours should become alive' do
+
     end
   end
 end
