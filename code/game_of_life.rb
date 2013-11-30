@@ -14,8 +14,8 @@ class Game
   def tick!
     death_list = []
     spawn_list = []
-    (0..@world.rows-1).each do |i|
-      (0..@world.cols-1).each do |j|
+    (1..@world.rows-2).each do |i|
+      (1..@world.cols-2).each do |j|
         if live_neighbors(i,j) < 2
           death_list << [i, j]
         end
@@ -46,44 +46,8 @@ class Game
       end
     end
 
-    if x < 0 or x > world.rows or y < 0 or y > world.cols
-      nil
-    elsif x == 0
-      if y == 0
-        #top-left corner
-        count_cells.([ [0,1], [1,0], [1,1] ])
-      elsif y < world.cols-1
-        #top edge
-        count_cells.([ [0,y-1], [1,y-1], [1,y], [1,y+1], [0,y+1] ])
-      elsif y == world.cols-1
-        #top-right corner
-        count_cells.([ [0,y-1], [1,y-1], [1,y] ])
-      end
-    elsif x < world.rows-1
-      if y == 0
-        #left edge
-        count_cells.([ [x-1,0], [x-1,1], [x,1], [x+1,1], [x+1,0] ])
-      elsif y < world.cols-1
-        #center area
-        count_cells.([ [x-1,y-1], [x-1,y], [x-1,y+1], [x,y+1],
-                       [x+1,y+1], [x+1,y], [x+1,y-1], [x,y-1] ])
-      elsif y == world.cols-1
-        #right edge
-        count_cells.([ [x-1,y], [x-1,y-1], [x,y-1], [x+1,y-1], [x+1,y] ])
-      end
-    elsif x == world.rows-1
-      if y == 0
-        #bottom-left corner
-        count_cells.([ [x-1,0], [x-1,1], [x,1] ])
-      elsif y < world.cols-1
-        #bottom edge
-        count_cells.([ [x,y-1], [x-1,y-1], [x-1,y], [x-1,y+1], [x,y+1] ])
-      elsif y == world.cols-1
-        #bottom-right corner
-        count_cells.([ [x,y-1], [x-1,y-1], [x-1,y] ])
-      end
-    end
-
+    count_cells.([ [x-1,y-1], [x-1,y], [x-1,y+1], [x,y+1],
+                   [x+1,y+1], [x+1,y], [x+1,y-1], [x,y-1] ])
     count
 
   end
@@ -109,6 +73,16 @@ class World
         end
       end
     end
+
+    def kill_border
+      @cell_grid[0].each { |cell| cell.die! }
+      @cell_grid[@rows-1].each { |cell| cell.die! }
+      (0..@rows-1).each do |row|
+        @cell_grid[row][0].die!
+        @cell_grid[row][@cols-1].die!
+      end
+    end
+
   end
 
 end

@@ -21,13 +21,14 @@ class GameWindow < Gosu::Window
     @lc_color = Gosu::Color.new(0xff000000)
 
     #cell size
-    @cs = 2
+    @cs = 5
 
     @cols = @width/@cs
     @rows = @height/@cs
 
     @world = World.new(@rows, @cols)
     @world.populate_randomly
+    @world.kill_border
     @game = Game.new(@world)
 
   end
