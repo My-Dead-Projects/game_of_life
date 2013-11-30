@@ -38,16 +38,17 @@ class Game
   def live_neighbors(x,y)
 
     count = 0
+    cg = @world.cell_grid
 
-    count_cells = lambda do |cells|
-      cg = @world.cell_grid
-      cells.each do |cell|
-        count += 1 if cg[cell[0]][cell[1]].alive?
-      end
-    end
+    count += 1 if cg[x-1][y-1].alive?
+    count += 1 if cg[x-1][y  ].alive?
+    count += 1 if cg[x-1][y+1].alive?
+    count += 1 if cg[x  ][y+1].alive?
+    count += 1 if cg[x+1][y+1].alive?
+    count += 1 if cg[x+1][y  ].alive?
+    count += 1 if cg[x+1][y-1].alive?
+    count += 1 if cg[x  ][y-1].alive?
 
-    count_cells.([ [x-1,y-1], [x-1,y], [x-1,y+1], [x,y+1],
-                   [x+1,y+1], [x+1,y], [x+1,y-1], [x,y-1] ])
     count
 
   end
