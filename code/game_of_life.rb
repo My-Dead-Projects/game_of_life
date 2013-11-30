@@ -16,13 +16,11 @@ class Game
     spawn_list = []
     (1..@world.rows-2).each do |i|
       (1..@world.cols-2).each do |j|
-        if live_neighbors(i,j) < 2
+        l_n = live_neighbors(i,j)
+        if l_n < 2 or l_n > 3
           death_list << [i, j]
         end
-        if live_neighbors(i,j) > 3
-          death_list << [i, j]
-        end
-        if live_neighbors(i,j) == 3
+        if l_n == 3
           spawn_list << [i, j]
         end
       end

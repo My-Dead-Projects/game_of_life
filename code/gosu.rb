@@ -21,7 +21,7 @@ class GameWindow < Gosu::Window
     @lc_color = Gosu::Color.new(0xff000000)
 
     #cell size
-    @cs = 5
+    @cs = 2
 
     @cols = @width/@cs
     @rows = @height/@cs
