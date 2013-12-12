@@ -7,6 +7,7 @@ class Game
     @world = world
     @seeds = seeds
     seeds.each do |seed|
+      @world.cell(seed[0], seed[1]).spawn!
       @world.cell_grid[seed[0]][seed[1]].alive = true
     end
   end
@@ -54,11 +55,12 @@ end
 
 class World
 
-  attr_accessor :rows, :cols, :cell_grid
+  attr_accessor :rows, :cols, :cell_grid, :cells
 
   def initialize(rows=3, cols=3)
     @rows = rows
     @cols = cols
+    @cells = Array.new(rows*cols) { Cell.new }
     @cell_grid = Array.new(rows) do |row|
       Array.new(cols) do |col|
         Cell.new(col,row)
@@ -66,6 +68,9 @@ class World
     end
 
     def populate_randomly
+      @cells.each do |cell|
+        cell.alive = [true, false, false, false].sample
+      end
       @cell_grid.each do |row|
         row.each do |cell|
           cell.alive = [true, false, false, false].sample
@@ -74,6 +79,10 @@ class World
     end
 
     def kill_border
+      (0..cols-1).each { |i| cells[i].die!; cells[cols*(rows-1)+i].die! }
+      (1..rows-2).each { |i| cells[cols*i].die! }
+      (2..rows-1).each { |i| cells[cols*i-1].die! }
+
       @cell_grid[0].each { |cell| cell.die! }
       @cell_grid[@rows-1].each { |cell| cell.die! }
       (0..@rows-1).each do |row|
@@ -82,6 +91,24 @@ class World
       end
     end
 
+    def cell(x,y)
+      @cells[y*@cols+x]
+    end
+
+    def live_neighbors(x,y)
+      count = 0
+
+      count += 1 if cell(x-1,y-1).alive?
+      count += 1 if cell(x  ,y-1).alive?
+      count += 1 if cell(x+1,y-1).alive?
+      count += 1 if cell(x-1,y  ).alive?
+      count += 1 if cell(x+1,y  ).alive?
+      count += 1 if cell(x-1,y+1).alive?
+      count += 1 if cell(x  ,y+1).alive?
+      count += 1 if cell(x+1,y+1).alive?
+
+      return count
+    end
   end
 
 end
@@ -106,7 +133,7 @@ class Cell
     @alive = true
   end
 
-  def initialize(x, y)
+  def initialize(x=0, y=0)
     @alive = false
     @x = x
     @y = y

@@ -1,4 +1,5 @@
 require 'rspec'
+require_relative 'spec_helper'
 require_relative '../code/game_of_life'
 
 describe 'Game of life' do
@@ -74,7 +75,7 @@ describe 'Game of life' do
     #  g1.live_neighbors(1,0).should == 3
     #  g2.live_neighbors(1,0).should == 2
     #end
-    it 'should yield correct results for a center area cell' do
+    it 'should yield correct results' do
       g1.live_neighbors(1,1).should == 4
       g2.live_neighbors(1,1).should == 4
     end
@@ -94,6 +95,29 @@ describe 'Game of life' do
     #  g1.live_neighbors(2,2).should == 1
     #  g2.live_neighbors(2,2).should == 2
     #end
+  end
+
+  context 'World.live_neighbors' do
+    let(:g1) { Game.new(World.new, [[0,0],[0,2],[1,1],[2,0],[2,2]]) }
+    let(:g2) { Game.new(World.new, [[0,1],[1,0],[1,2],[2,1]]) }
+
+    it 'should yield correct results' do
+      g1.world.live_neighbors(1,1).should == 4
+      g2.world.live_neighbors(1,1).should == 4
+    end
+  end
+
+  context 'World.kill_border' do
+    subject { World.new }
+    before :each do
+      subject.cells.each { |cell| cell.spawn! }
+      subject.kill_border
+    end
+
+    it 'should yield correct results' do
+      subject.live_neighbors(1,1).should == 0
+    end
+
   end
 
   describe 'Rule' do
